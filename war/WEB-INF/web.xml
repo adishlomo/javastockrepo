@@ -12,6 +12,17 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>Adi_MTA</servlet-name>
 		<url-pattern>/adi_mta</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+<servlet-name>Calculation</servlet-name>
+<servlet-class>com.mta.javastock.Calculation</servlet-class>
+</servlet>	
+<servlet-mapping>
+<servlet-name>Calculation</servlet-name>
+<url-pattern>/calculation</url-pattern>
+</servlet-mapping>
+
+	
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
