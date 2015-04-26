@@ -12,8 +12,7 @@ import com.mta.javastock.Stock;
 
 public class Portfolio {
 	
-	public final static int MAX_PORTFOLIO_SIZE = 5;
-
+	private final static int MAX_PORTFOLIO_SIZE = 5;
 	private String title;
 	private int portfolioSize;
 	private Stock[] stocks;
@@ -28,19 +27,20 @@ public class Portfolio {
 	 * @see com.Adi-MTA
 	 */
 	
-	public Portfolio(String title) {
-		this.title = title;
+	public Portfolio() {
+		this.title = "protfolio";
 		this.stocks = new Stock[MAX_PORTFOLIO_SIZE];
 		this.portfolioSize = 0;
 		
 	}
 	public void addStock(Stock stock){
 		
-		if(portfolioSize< MAX_PORTFOLIO_SIZE)
+		if(portfolioSize< MAX_PORTFOLIO_SIZE && stock != null )
 		{
 			stocks[this.portfolioSize] = stock;
 			portfolioSize++;
 		}
+		else 	System.out.println("Sorry, mail is full or is shop is null");
 	}
 
 	public Stock[] getStocks(){
@@ -74,7 +74,7 @@ public class Portfolio {
 	public String getHtmlString(){
 		
 		String res = new String();
-		res = res+"<h1>"+this.title+"</h1> <br>";
+		res = res+"<h1>"+getTitle()+"</h1> <br>";
 		
 		for(int i=0; i<portfolioSize;i++)
 		{

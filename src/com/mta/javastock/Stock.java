@@ -55,9 +55,27 @@ public class Stock {
 		this.date = date;
 	}
 	
+	public int getRecommendation() {
+		return recommendation;
+	}
+
+	public void setRecommendation(int recommendation) {
+		this.recommendation = recommendation;
+	}
+
+	public int getStockQuantity() {
+		return stockQuantity;
+	}
+
+	public void setStockQuantity(int stockQuantity) {
+		this.stockQuantity = stockQuantity;
+	}
+	
 	public String getHtmlDescription(){
 		String dateStr = dateFt.format(date);
 		String result = new String("<b>Stock symbol is: </b>" +getSymbol()+"<b>ask: </b>"+getAsk() +"<b>Bid: </b>"+getBid()+"<b>Date: </b>"+ dateStr);
 		return result;
 	}
+
+
 }
