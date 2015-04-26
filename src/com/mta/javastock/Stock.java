@@ -7,11 +7,19 @@ import java.text.SimpleDateFormat;
 
 public class Stock {
 	
+	public final static int BUY = 0;
+	public final static int SELL = 1;
+	public final static int REMOVE = 2;
+	public final static int HOLD = 3;
+
 	private String symbol;
 	private float ask;
 	private float bid;
 	private Date date;
+	private int recommendation;
+	private int stockQuantity;
 	
+
 	DateFormat dateFt = new SimpleDateFormat("MM/dd/yyyy");
 	
 	public Stock(String symbol, float ask, float bid, Date date) {
@@ -47,7 +55,7 @@ public class Stock {
 		this.date = date;
 	}
 	
-	public String getHtmlDescription(){ //return the details in format html - doesn't get parameters. 
+	public String getHtmlDescription(){
 		String dateStr = dateFt.format(date);
 		String result = new String("<b>Stock symbol is: </b>" +getSymbol()+"<b>ask: </b>"+getAsk() +"<b>Bid: </b>"+getBid()+"<b>Date: </b>"+ dateStr);
 		return result;
