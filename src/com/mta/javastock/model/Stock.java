@@ -1,4 +1,4 @@
-package com.mta.javastock;
+package com.mta.javastock.model;
 
 import java.util.Date;
 
@@ -27,9 +27,18 @@ public class Stock {
 		this.ask = ask;
 		this.bid = bid;
 		this.date = date;
+		this.stockQuantity = 0;
+		this.recommendation = 0;
+		
 		
 	}
 	
+	public Stock (Stock stock){
+		this (stock.getSymbol(), stock.getAsk(), stock.getBid(), new Date(stock.getDate().getTime()));
+		this.recommendation = stock.getRecommendation();
+		this.stockQuantity = stock.getStockQuantity();}
+	
+
 	public String getSymbol() {
 		return symbol;
 	}
@@ -70,6 +79,10 @@ public class Stock {
 	public void setStockQuantity(int stockQuantity) {
 		this.stockQuantity = stockQuantity;
 	}
+	
+	/**
+	 * Get  get Html description with all portfolio details
+	 */
 	
 	public String getHtmlDescription(){
 		String dateStr = dateFt.format(date);
