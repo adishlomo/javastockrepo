@@ -1,12 +1,15 @@
+
 package com.mta.javastock.model;
 
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import org.algo.model.StockInterface;
+
 import com.mta.javastock.model.Portfolio.ALGO_RECOMMENDATION;
 
-public class Stock {
+public class Stock implements StockInterface{
 	
 	
 	private String symbol;
@@ -35,6 +38,15 @@ public class Stock {
 		this.date = date;
 		this.recommendation = ALGO_RECOMMENDATION.HOLD; 
 		this.stockQuantity = 0;
+	}
+	
+	public Stock (){
+		this.symbol = new String();
+		this.bid = 0;
+		this.ask = 0;
+		this.date = new Date();
+		this.recommendation = ALGO_RECOMMENDATION.HOLD;
+		this.stockQuantity = 0;				
 	}
 	/**
 	 * copy c'tor of stock
@@ -83,6 +95,7 @@ public class Stock {
 	public int getStockQuantity() {
 		return stockQuantity;
 	}
+	
 
 	public void setStockQuantity(int stockQuantity) {
 		this.stockQuantity = stockQuantity;
@@ -98,3 +111,4 @@ public class Stock {
 		return result;
 	}
 }
+

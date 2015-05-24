@@ -1,5 +1,8 @@
 package com.mta.javastock.model;
 
+import org.algo.model.PortfolioInterface;
+import org.algo.model.StockInterface;
+
 
 /**
  * This class represents a Portfolio of Stocks.
@@ -9,7 +12,7 @@ package com.mta.javastock.model;
  * @since 26/4/2015
  */
 
-public class Portfolio {
+public class Portfolio implements PortfolioInterface{
 	
 	private final static int MAX_PORTFOLIO_SIZE = 5;
 	
@@ -31,12 +34,26 @@ public class Portfolio {
 	 * 		  the title of the Portfolio
 	 * @see com.mta.javacourse.model
 	 */
+	public Portfolio(Stock[] stocksArray) {
+		this.title = new String("Temporary Title");
+		this.stocks = stocksArray;
+		this.portfolioSize = getPortfolioSizeMethod(stocksArray);
+		this.balance = 0;
+	}
+	
 	
 	public Portfolio(String name) {
 		this.title = name;
 		this.stocks = new Stock[MAX_PORTFOLIO_SIZE];
 		this.portfolioSize = 0;
 		this.balance = 0 ;
+	}
+	
+	public Portfolio() {
+		this.title = new String("Temporary");
+		this.stocks = new Stock[MAX_PORTFOLIO_SIZE];
+		this.portfolioSize = 0;
+		this.balance = 0;
 	}
 	/**
 	 * Copy c'tor of portfolio type
@@ -182,7 +199,6 @@ public boolean removeStock(String stockName){
 			System.out.println("Please note that the portfolio has reached it's maximum stock capacity.");
 			return false;
 		}
-//////////////////////למה לחזור על כל הפעולות שוב ? למה לא רק אד סטוק????
 		if (quantity == -1){ // when we buy a stocks we also need to add it to array
 			this.addStock(stock);
 			int quantityToBuy = (int)this.balance/(int)this.stocks[i].getAsk();
@@ -201,7 +217,7 @@ public boolean removeStock(String stockName){
 
 		}
 	}
-	private int findStock (String stockToFind){
+	public int findStock (String stockToFind){
 		for(int i = 0; i< this.portfolioSize; i++){
 			if(stockToFind.equals(this.stocks[i].getSymbol())){
 				return i;
@@ -209,6 +225,18 @@ public boolean removeStock(String stockName){
 		}
 		return -1;
 	}
+	
+	public StockInterface findStock1 (String stockToFind){
+		int i = 0;
+		for( i = 0; i< this.portfolioSize; i++){
+			if(stockToFind.equals(this.stocks[i].getSymbol())){
+				return this.stocks[i];
+			}
+		}
+		return null;
+	}
+	
+	
 	public float getStocksValue(){ // הערך הלא נזיל של המניה - כסף מושקע, ביד זה ערך מניה
 		float totalValue =0;
 		for(int i = 0; i<this.portfolioSize ;i++){
@@ -274,5 +302,18 @@ public boolean removeStock(String stockName){
 			this.balance = currBalance ;
 		}
 	}
+	
+	private int getPortfolioSizeMethod(Stock[] array){
+		int i=0;
+		for (i=0; i< MAX_PORTFOLIO_SIZE ; i++){
+			if (array[i] == null){
+				return i;
+			}
+		}
+		return i;
+	}
 
 }
+
+
+
