@@ -1,14 +1,11 @@
 package com.mta.javastock.service;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.mta.javastock.model.Portfolio;
-import com.mta.javastock.model.Stock;
-
 import org.algo.dto.PortfolioDto;
 import org.algo.dto.PortfolioTotalStatus;
 import org.algo.dto.StockDto;
@@ -20,15 +17,15 @@ import org.algo.service.DatastoreService;
 import org.algo.service.MarketService;
 import org.algo.service.PortfolioManagerInterface;
 import org.algo.service.ServiceManager;
+import com.mta.javastock.model.Portfolio;
+import com.mta.javastock.model.Portfolio.ALGO_RECOMMENDATION;
+import com.mta.javastock.model.Stock;
 
 /**
  * Class code to demonstrate new PortfolioManager
  */
 
 public class PortfolioManager implements PortfolioManagerInterface {
-
-	public enum ALGO_RECOMMENDATION {BUY, SELL, REMOVE, HOLD }
-
 
 	private DatastoreService datastoreService = ServiceManager.datastoreService();
 
@@ -43,12 +40,12 @@ public class PortfolioManager implements PortfolioManagerInterface {
 	@Override
 	public void update() {
 		StockInterface[] stocks = getPortfolio().getStocks();
-		List<String> symbols = new ArrayList<>(Portfolio.getMaxPortfolioSize());
+		List<String> symbols = new ArrayList<>(Portfolio.getMaxSize());
 		for (StockInterface si : stocks) {
 			symbols.add(si.getSymbol());
 		}
 
-		List<Stock> update = new ArrayList<>(Portfolio.getMaxPortfolioSize());
+		List<Stock> update = new ArrayList<>(Portfolio.getMaxSize());
 		List<Stock> currentStocksList = new ArrayList<Stock>();
 		try {
 			List<StockDto> stocksList = MarketService.getInstance().getStocks(symbols);
@@ -77,7 +74,7 @@ public class PortfolioManager implements PortfolioManagerInterface {
 		Portfolio portfolio = (Portfolio) getPortfolio();
 		Map<Date, Float> map = new HashMap<>();
 
-		//get stock status from db.
+
 		StockInterface[] stocks = portfolio.getStocks();
 		for (int i = 0; i < stocks.length; i++) {
 			StockInterface stock = stocks[i];
@@ -109,13 +106,11 @@ public class PortfolioManager implements PortfolioManagerInterface {
 		PortfolioTotalStatus[] ret = new PortfolioTotalStatus[map.size()];
 
 		int index = 0;
-		//create dto objects
 		for (Date date : map.keySet()) {
 			ret[index] = new PortfolioTotalStatus(date, map.get(date));
 			index++;
 		}
 
-		//sort by date ascending.
 		Arrays.sort(ret);
 
 		return ret;
@@ -130,19 +125,13 @@ public class PortfolioManager implements PortfolioManagerInterface {
 
 		try {
 			StockDto stockDto = ServiceManager.marketService().getStock(symbol);
-			
-			//get current symbol values from nasdaq.
-			Stock stock = fromDto(stockDto);
-			
-			//first thing, add it to portfolio.
-			portfolio.addStock(stock);   
-			//or:
-			//portfolio.addStock(stock);   
 
-			//second thing, save the new stock to the database.
-			datastoreService.saveStock(toDto(portfolio.findStock1(symbol)));
-			
-			
+			Stock stock = fromDto(stockDto);  
+
+			portfolio.addStock(stock);   
+
+			datastoreService.saveStock(toDto(portfolio.findStock(symbol)));
+
 			flush(portfolio);
 		} catch (SymbolNotFoundInNasdaq e) {
 			System.out.println("Stock Not Exists: "+symbol);
@@ -156,12 +145,12 @@ public class PortfolioManager implements PortfolioManagerInterface {
 	public void buyStock(String symbol, int quantity) throws PortfolioException{
 		try {
 			Portfolio portfolio = (Portfolio) getPortfolio();
-			
-			Stock stock = (Stock)portfolio.findStock1(symbol);
+
+			Stock stock = (Stock) portfolio.findStock(symbol);
 			if(stock == null) {
 				stock = fromDto(ServiceManager.marketService().getStock(symbol));				
 			}
-			
+
 			portfolio.buyStock(stock, quantity);
 			flush(portfolio);
 		}catch (Exception e) {
@@ -190,7 +179,7 @@ public class PortfolioManager implements PortfolioManagerInterface {
 		newStock.setBid(stockDto.getBid());
 		newStock.setDate(stockDto.getDate());
 		newStock.setStockQuantity(stockDto.getQuantity());
-		if(stockDto.getRecommendation() != null) newStock.setRecommendation(com.mta.javastock.model.Portfolio.ALGO_RECOMMENDATION.valueOf(stockDto.getRecommendation()));
+		if(stockDto.getRecommendation() != null) newStock.setRecommendation(ALGO_RECOMMENDATION.valueOf(stockDto.getRecommendation()));
 
 		return newStock;
 	}
@@ -204,7 +193,7 @@ public class PortfolioManager implements PortfolioManagerInterface {
 		if (inStock == null) {
 			return null;
 		}
-		
+
 		Stock stock = (Stock) inStock;
 		return new StockDto(stock.getSymbol(), stock.getAsk(), stock.getBid(), 
 				stock.getDate(), stock.getStockQuantity(), stock.getRecommendation().name());
@@ -271,8 +260,8 @@ public class PortfolioManager implements PortfolioManagerInterface {
 
 		return ret;
 	}	
-	
-	
+
+
 	/**
 	 * A method that returns a new instance of Portfolio copied from another instance.
 	 * @param portfolio		Portfolio to copy.
@@ -323,4 +312,3 @@ public class PortfolioManager implements PortfolioManagerInterface {
 
 
 }
-
